@@ -1,0 +1,287 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* LH Hub — identidade mint/teal (refs dash Seller). Nomes legacy brand-orange/yellow mantidos p/ compat. */
+  --brand-orange: #00D4A8;
+  --brand-orange-dim: rgba(0, 212, 168, 0.12);
+  --brand-yellow: #00D4A8;
+  --brand-yellow-dim: rgba(0, 212, 168, 0.12);
+  --brand-secondary: #14B8A6;
+  --brand-on-accent: #0B0B0B;
+  --brand-green: #22C55E;
+  --brand-green-dim: rgba(34, 197, 94, 0.12);
+  --brand-red: #EF4444;
+  --brand-red-dim: rgba(239, 68, 68, 0.12);
+  --surface-base: #FAFAFA;
+  --surface-elevated: #F4F4F5;
+  --surface-card: #FFFFFF;
+  --surface-border: #E4E4E7;
+  --surface-hover: #F4F4F5;
+  --text-primary: #09090B;
+  --text-secondary: #71717A;
+  --text-muted: #A1A1AA;
+  --text-label: #71717A;
+  --accent-dashboard: #00D4A8;
+  --accent-finance: #22C55E;
+  --accent-goals: #A855F7;
+  --accent-alerts: #00D4A8;
+  --accent-operations: #EF4444;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 24px rgba(0, 212, 168, 0.18);
+  --radius-card: 12px;
+  --radius-button: 8px;
+  --radius-input: 8px;
+}
+
+.dark {
+  --brand-orange: #00D4A8;
+  --brand-orange-dim: rgba(0, 212, 168, 0.12);
+  --brand-yellow: #00D4A8;
+  --brand-yellow-dim: rgba(0, 212, 168, 0.12);
+  --brand-secondary: #14B8A6;
+  --brand-on-accent: #0B0B0B;
+  --surface-base: #121212;
+  --surface-elevated: #181818;
+  --surface-card: #1C1C1C;
+  --surface-border: #2A2A2A;
+  --surface-hover: #242424;
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0A0A0;
+  --text-muted: #8E8E93;
+  --text-label: #8E8E93;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 28px rgba(0, 212, 168, 0.16);
+}
+
+/* Tema brand — charcoal + mint (mesmo espírito das prints) */
+.brand {
+  --brand-orange: #00D4A8;
+  --brand-orange-dim: rgba(0, 212, 168, 0.14);
+  --brand-yellow: #00D4A8;
+  --brand-yellow-dim: rgba(0, 212, 168, 0.12);
+  --brand-secondary: #14B8A6;
+  --brand-on-accent: #0B0B0B;
+  --surface-base: #101010;
+  --surface-elevated: #161616;
+  --surface-card: #1A1A1A;
+  --surface-border: rgba(0, 212, 168, 0.12);
+  --surface-hover: #222222;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B0B0B0;
+  --text-muted: #8A8A8A;
+  --text-label: #8E8E93;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 212, 168, 0.05);
+  --shadow-glow: 0 0 32px rgba(0, 212, 168, 0.14), 0 0 80px rgba(20, 184, 166, 0.08);
+}
+
+@keyframes brand-breathe {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    opacity: 0.62;
+    transform: scale(1.04) translate(0.5%, -0.5%);
+  }
+}
+
+.brand body {
+  background-color: #0E0E0E;
+  background-image:
+    radial-gradient(ellipse 100% 80% at -8% -25%, rgba(0, 212, 168, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 55% at 108% 8%, rgba(20, 184, 166, 0.07) 0%, transparent 46%),
+    linear-gradient(165deg, #0A0A0A 0%, #121212 38%, #0E0E0E 72%, #0A0A0A 100%);
+  background-attachment: fixed;
+}
+
+/* background-attachment: fixed causa travamento de scroll no iOS/Android. */
+@media (max-width: 1023px) {
+  .brand body {
+    background-attachment: scroll;
+  }
+}
+
+.brand ::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 168, 0.22);
+  border-radius: 9999px;
+}
+
+@layer base {
+  * {
+    @apply border-surface-border;
+  }
+
+  html {
+    /* Evita o iOS inflar a fonte em landscape e o realce cinza ao tocar. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-surface-base text-text-primary antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    /* clip (e não hidden) para não criar contexto de scroll e quebrar o sticky. */
+    overflow-x: clip;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-border rounded-full;
+  }
+}
+
+@layer components {
+  .label-upper {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-label);
+  }
+
+  .card-surface {
+    @apply rounded-xl border border-surface-border bg-surface-card;
+  }
+
+  .dashboard-mesh {
+    background:
+      radial-gradient(ellipse 80% 50% at 15% -10%, rgba(0, 212, 168, 0.1), transparent),
+      radial-gradient(ellipse 60% 40% at 85% 5%, rgba(20, 184, 166, 0.08), transparent),
+      radial-gradient(ellipse 50% 30% at 50% 100%, rgba(0, 212, 168, 0.05), transparent);
+  }
+
+  .brand .dashboard-mesh {
+    background:
+      radial-gradient(ellipse 100% 70% at 0% 0%, rgba(0, 212, 168, 0.14), transparent 55%),
+      radial-gradient(ellipse 80% 55% at 100% 20%, rgba(20, 184, 166, 0.08), transparent 50%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(0, 212, 168, 0.04), transparent 45%);
+  }
+
+  .brand .card-surface {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+      160deg,
+      rgba(0, 212, 168, 0.05) 0%,
+      rgba(26, 26, 26, 0.98) 22%,
+      rgba(16, 16, 16, 1) 100%
+    );
+    border-color: rgba(0, 212, 168, 0.1);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.45),
+      0 0 0 1px rgba(0, 212, 168, 0.04),
+      inset 0 1px 0 rgba(0, 212, 168, 0.08);
+  }
+
+  .brand .card-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 212, 168, 0.35) 35%,
+      rgba(0, 212, 168, 0.14) 65%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .brand .brand-sidebar {
+    background: linear-gradient(180deg, rgba(18, 18, 18, 0.99) 0%, rgba(12, 12, 12, 1) 100%);
+    border-right-color: rgba(0, 212, 168, 0.1);
+    box-shadow:
+      4px 0 40px rgba(0, 0, 0, 0.5),
+      inset -1px 0 0 rgba(0, 212, 168, 0.08);
+  }
+
+  .brand .brand-sidebar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12%;
+    bottom: 12%;
+    width: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 212, 168, 0.65) 35%,
+      rgba(20, 184, 166, 0.3) 65%,
+      transparent 100%
+    );
+    box-shadow: 0 0 16px rgba(0, 212, 168, 0.22);
+    pointer-events: none;
+  }
+
+  .brand .brand-header {
+    background: linear-gradient(
+      180deg,
+      rgba(16, 16, 16, 0.94) 0%,
+      rgba(12, 12, 12, 0.8) 100%
+    );
+    border-bottom-color: rgba(0, 212, 168, 0.08);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 1px 0 rgba(0, 212, 168, 0.05);
+  }
+
+  .brand-ambient {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .brand-ambient-a {
+    background: radial-gradient(
+      ellipse 65% 50% at 12% 18%,
+      rgba(0, 212, 168, 0.08) 0%,
+      transparent 58%
+    );
+    animation: brand-breathe 14s ease-in-out infinite;
+  }
+
+  .brand-ambient-b {
+    background: radial-gradient(
+      ellipse 50% 40% at 88% 72%,
+      rgba(20, 184, 166, 0.05) 0%,
+      transparent 52%
+    );
+    animation: brand-breathe 18s ease-in-out infinite reverse;
+  }
+
+  .brand-vignette {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(
+      ellipse 90% 80% at 50% 45%,
+      transparent 35%,
+      rgba(0, 0, 0, 0.62) 100%
+    );
+  }
+
+  .brand-grain {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.028;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
