@@ -58,3 +58,5 @@ scripts/*
 # Docs internas / auditorias (se presentes)
 docs/rascunhos-recuperados/
 REGISTROS-DIAS-DE-VENDA.md
+
+.vercel
