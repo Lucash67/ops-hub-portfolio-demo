@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { getSessionUser, toPublicUser } from "@/lib/auth/session";
+import { toPublicUser } from "@/lib/auth/session";
 import { apiError } from "@/shared/api-messages";
+import { isAuthFailure, requireApiSession } from "@/lib/auth/require-api-session";
 
 export async function GET() {
-  const user = await getSessionUser();
-  if (!user) return apiError("Não autenticado", 401);
-  return NextResponse.json({ user: toPublicUser(user) });
+  const auth = await requireApiSession();
+  if (isAuthFailure(auth)) return auth;
+  return NextResponse.json({ user: toPublicUser(auth) });
 }

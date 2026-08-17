@@ -7,6 +7,8 @@ import { addDays, format, getDay, subDays } from "date-fns";
 export const DEMO_EMAIL = "demo@portfolio.com";
 export const DEMO_PASSWORD = "Demo123!";
 export const DEMO_NAME = "Demo Portfolio";
+/** Same id on every Vercel instance so JWT + /tmp SQLite stay aligned. */
+export const DEMO_USER_ID = "demo-portfolio-user";
 
 const CLIENTS = [
   { name: "Mariana Oliveira", sector: "Escritório", company: "NovaTech Solutions" },
@@ -68,23 +70,31 @@ export async function ensureDemoData(options?: { force?: boolean }): Promise<voi
       "@/platform/db/repositories/user-repository"
     );
     const existing = await findUserByEmail(DEMO_EMAIL);
-    if (existing && !options?.force) return;
 
     const { hashPassword } = await import("@/lib/auth/password");
     const { createBusiness, listBusinesses } = await import(
       "@/platform/db/repositories/business-repository"
     );
-    const { createProduct } = await import("@/platform/db/repositories/product-repository");
+    const { createProduct, listProducts } = await import(
+      "@/platform/db/repositories/product-repository"
+    );
     const { createClient } = await import("@/platform/db/repositories/client-repository");
     const { executeSaleRecord } = await import("@/platform/db/repositories/sale-repository");
 
     let user = existing;
     if (!user) {
       user = await createUser({
+        id: DEMO_USER_ID,
         email: DEMO_EMAIL,
         name: DEMO_NAME,
         passwordHash: await hashPassword(DEMO_PASSWORD),
       });
+    } else if (!options?.force) {
+      const businesses = await listBusinesses(user.id);
+      if (businesses.length > 0) {
+        const products = await listProducts(businesses[0]!.id);
+        if (products.length > 0) return;
+      }
     }
 
     getSqlite()
@@ -107,7 +117,6 @@ export async function ensureDemoData(options?: { force?: boolean }): Promise<voi
     if (!salty || !candy) throw new Error("Demo businesses missing");
 
     // Evita duplicar produtos se cold start parcial
-    const { listProducts } = await import("@/platform/db/repositories/product-repository");
     const existingProducts = await listProducts(salty.id);
     if (existingProducts.length > 0 && !options?.force) return;
 

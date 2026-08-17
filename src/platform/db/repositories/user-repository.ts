@@ -66,6 +66,8 @@ export async function createUser(input: {
   email: string;
   name: string;
   passwordHash: string;
+  /** Stable id for portfolio demo seeds across serverless instances. */
+  id?: string;
 }): Promise<AuthUserRecord> {
   const email = input.email.trim().toLowerCase();
   const name = input.name.trim();
@@ -77,6 +79,7 @@ export async function createUser(input: {
       db
         .insert(pgUsers)
         .values({
+          ...(input.id ? { id: input.id } : {}),
           email,
           name,
           passwordHash: input.passwordHash,
@@ -89,7 +92,7 @@ export async function createUser(input: {
     return mapPgUser(rows);
   }
 
-  const id = generateId();
+  const id = input.id ?? generateId();
   const db = getSqliteDb();
   await queryRun(
     db.insert(sqliteUsers).values({

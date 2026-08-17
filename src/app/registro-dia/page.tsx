@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useBusinessScope } from "@/hooks/use-business-scope";
-import { isAllBusinesses, SALGADOS_BUSINESS_ID } from "@/lib/business-units";
+import { useOwnedBusinesses } from "@/hooks/use-owned-businesses";
+import { isAllBusinesses } from "@/lib/business-units";
 import { useBusinessContextStore } from "@/stores/business-context-store";
 import { formatCurrency } from "@/lib/utils";
 import { formatSaleShift } from "@/lib/sale-shift";
@@ -50,16 +51,19 @@ function PreviewSection({
 export default function RegistroDiaPage() {
   const { canWrite, writeBlockedMessage, activeBusinessId } = useBusinessScope();
   const setActiveBusiness = useBusinessContextStore((s) => s.setActiveBusiness);
+  const { units } = useOwnedBusinesses();
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState("");
   const [preview, setPreview] = useState<DayRegistrationPreview | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Prefer a real owned unit — never hardcode an id (fights empty list → max update depth).
   useEffect(() => {
-    if (isAllBusinesses(activeBusinessId)) {
-      setActiveBusiness(SALGADOS_BUSINESS_ID);
-    }
-  }, [activeBusinessId, setActiveBusiness]);
+    if (!isAllBusinesses(activeBusinessId)) return;
+    const first = units[0];
+    if (!first) return;
+    setActiveBusiness(first.id);
+  }, [activeBusinessId, units, setActiveBusiness]);
 
   const parseMutation = useMutation({
     mutationFn: async (text: string) => {

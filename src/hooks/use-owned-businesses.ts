@@ -38,7 +38,10 @@ export function useOwnedBusinesses() {
 
   const effectiveBusinessId = useMemo(() => {
     if (!query.data) return null;
-    if (units.length === 0) return ALL_BUSINESSES_ID;
+    if (units.length === 0) {
+      // Stay put — forcing "all" while a page pins a unit caused update loops.
+      return activeBusinessId;
+    }
     if (
       activeBusinessId === ALL_BUSINESSES_ID ||
       units.some((u) => u.id === activeBusinessId)
