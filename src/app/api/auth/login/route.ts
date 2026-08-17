@@ -9,6 +9,9 @@ import {
 } from "@/lib/auth/session";
 import { MSG, apiError } from "@/shared/api-messages";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1).max(128),
@@ -16,7 +19,6 @@ const loginSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    // Garante seed fictício no cold start (Vercel /tmp SQLite — sem Supabase).
     if (process.env.NEXT_PUBLIC_DEMO_MODE === "true" || process.env.VERCEL) {
       const { ensureDemoData } = await import("@/lib/demo/ensure-demo-data");
       await ensureDemoData();
@@ -35,6 +37,10 @@ export async function POST(request: NextRequest) {
       return apiError("Informe e-mail e senha válidos.", 400);
     }
     console.error("Auth login error:", error);
+    const detail = error instanceof Error ? error.message : String(error);
+    if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
+      return apiError(`Demo login failed: ${detail}`, 500);
+    }
     return apiError(MSG.AUTH_LOGIN_FAILED);
   }
 }

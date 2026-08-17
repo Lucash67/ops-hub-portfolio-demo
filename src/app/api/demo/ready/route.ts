@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { ensureDemoData } from "@/lib/demo/ensure-demo-data";
 
-/** Warm-up da demo (SQLite /tmp) — chamado no boot e sob demanda. */
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+/** Warm-up da demo (SQLite /tmp) — sem auth. */
 export async function GET() {
   try {
     process.env.DB_PROVIDER = "sqlite";
