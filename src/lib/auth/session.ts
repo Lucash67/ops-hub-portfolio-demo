@@ -2,6 +2,8 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 export const AUTH_COOKIE = "lh_hub_token";
+/** Shared fallback so Edge middleware and Node API sign/verify the same JWT on Vercel demo. */
+export const DEMO_AUTH_SECRET = "portfolio-demo-auth-secret-min-32-chars!!";
 const SESSION_TTL = "7d";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 
@@ -13,13 +15,12 @@ export interface SessionUser {
 
 function getAuthSecret(): Uint8Array {
   const secret = process.env.AUTH_SECRET;
-  if (!secret || secret.length < 32) {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("AUTH_SECRET must be set (min 32 chars) in production");
-    }
-    return new TextEncoder().encode("lh-hub-dev-secret-change-in-production-32chars");
+  if (secret && secret.length >= 32) {
+    return new TextEncoder().encode(secret);
   }
-  return new TextEncoder().encode(secret);
+  // Portfolio demo: Node may inject AUTH_SECRET only in-process during seed;
+  // Edge middleware must use the same constant or login redirects forever to /login.
+  return new TextEncoder().encode(DEMO_AUTH_SECRET);
 }
 
 export async function createSessionToken(user: SessionUser): Promise<string> {

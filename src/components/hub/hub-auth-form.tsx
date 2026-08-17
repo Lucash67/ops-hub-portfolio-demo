@@ -144,8 +144,9 @@ export function HubAuthForm({ compact = false }: { compact?: boolean }) {
       });
 
       setSuccess(true);
-      await new Promise((r) => setTimeout(r, 300));
-      router.push("/");
+      // Full navigation so the auth cookie is applied before middleware runs.
+      window.location.assign("/");
+      return;
     } catch {
       setErrors({ form: "Erro de conexão. Verifique sua rede e tente novamente." });
     } finally {

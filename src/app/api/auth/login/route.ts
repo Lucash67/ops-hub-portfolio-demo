@@ -38,7 +38,11 @@ export async function POST(request: NextRequest) {
     }
     console.error("Auth login error:", error);
     const detail = error instanceof Error ? error.message : String(error);
-    if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
+    if (
+      process.env.NEXT_PUBLIC_DEMO_MODE !== "false" ||
+      process.env.VERCEL ||
+      process.env.DEMO_SQLITE_TMP === "true"
+    ) {
       return apiError(`Demo login failed: ${detail}`, 500);
     }
     return apiError(MSG.AUTH_LOGIN_FAILED);

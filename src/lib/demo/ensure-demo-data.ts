@@ -56,8 +56,9 @@ export async function ensureDemoData(options?: { force?: boolean }): Promise<voi
   if (seedPromise) return seedPromise;
   seedPromise = (async () => {
     process.env.DB_PROVIDER = "sqlite";
+    const { DEMO_AUTH_SECRET } = await import("@/lib/auth/session");
     if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 32) {
-      process.env.AUTH_SECRET = "portfolio-demo-auth-secret-min-32-chars!!";
+      process.env.AUTH_SECRET = DEMO_AUTH_SECRET;
     }
 
     const { getSqliteDb, getSqlite } = await import("@/platform/db/sqlite/client");
@@ -209,8 +210,9 @@ export async function ensureDemoData(options?: { force?: boolean }): Promise<voi
         time: "11:00",
       });
     }
-  })().finally(() => {
-    /* keep seedPromise resolved for idempotency */
+  })().catch((error) => {
+    seedPromise = null;
+    throw error;
   });
 
   return seedPromise;
