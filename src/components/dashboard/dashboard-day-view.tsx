@@ -185,7 +185,7 @@ export function DashboardDayView({
               <Badge variant="info" className="capitalize">{dateLabel}</Badge>
               {idleDay ? (
                 <span className="inline-flex items-center rounded-full border border-[#00D4A8]/30 bg-[#00D4A8]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#00D4A8]">
-                  Sem operação — Salgados não opera no fim de semana
+                  Sem operação — não há expediente neste dia
                 </span>
               ) : (
                 operationResult.tone === "success" && (
