@@ -252,7 +252,7 @@ export default function DiarioPage() {
   if (!scoped) {
     return (
       <AppShell title="Diário Operacional" subtitle="Memória operacional do negócio">
-        <BusinessWriteNotice message="Selecione uma operação específica (Salgados ou Brigadeiros) para acessar o diário." />
+        <BusinessWriteNotice message="Selecione uma operação específica para acessar o diário. Nesta demo a conta começa sem operações — no produto real cada usuário cria as suas." />
       </AppShell>
     );
   }

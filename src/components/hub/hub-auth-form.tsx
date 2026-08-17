@@ -353,14 +353,16 @@ export function HubAuthForm({ compact = false }: { compact?: boolean }) {
 
             {isDemoMode && tab === "login" ? (
               <div className="rounded-xl border border-[#00D4A8]/25 bg-[#00D4A8]/8 px-3.5 py-3 text-left text-[11px] leading-relaxed sm:text-xs">
-                <p className="font-semibold text-[#5EEAD4]">Acesso rápido — demo pronta</p>
+                <p className="font-semibold text-[#5EEAD4]">Acesso rápido — conta limpa</p>
                 <p className="mt-1.5 text-[#E5E5E5]">
                   E-mail: <span className="font-mono text-[#5EEAD4]">{DEMO_EMAIL}</span>
                 </p>
                 <p className="mt-0.5 text-[#E5E5E5]">
                   Senha: <span className="font-mono text-[#5EEAD4]">{DEMO_PASSWORD}</span>
                 </p>
-                <p className="mt-1.5 text-[#737373]">Campos já preenchidos. Basta clicar em Entrar.</p>
+                <p className="mt-1.5 text-[#737373]">
+                  Sem operações pré-carregadas. No produto real cada usuário cria as suas.
+                </p>
               </div>
             ) : null}
 

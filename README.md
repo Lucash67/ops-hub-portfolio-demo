@@ -2,7 +2,9 @@
 
 Demonstração pública de um **centro operacional de gestão** multi-negócio.
 
-> Dados 100% fictícios. Sem Supabase. Sem banco de produção.
+> Conta **vazia de propósito**: sem operações nem dados pré-carregados.
+> No produto real, cada usuário cria as próprias operações.
+> Sem Supabase. Sem banco de produção.
 
 ## Conta demo
 
@@ -15,7 +17,7 @@ Demonstração pública de um **centro operacional de gestão** multi-negócio.
 
 Next.js 14 · React 18 · TypeScript · Tailwind · Recharts · SQLite (`better-sqlite3`) · Drizzle · TanStack Query · JWT
 
-Na Vercel o SQLite roda em `/tmp` e o seed fictício sobe no boot (sem Postgres/Supabase).
+Na Vercel o SQLite roda em `/tmp`. O login garante só a conta demo (sem seed de operações).
 
 ## Local
 

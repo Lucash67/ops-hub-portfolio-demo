@@ -236,7 +236,7 @@ export function resolveMomentSuggestion(
       eyebrow: "Fim de semana",
       title: "Revise a semana que passou",
       description:
-        "Salty não opera agora — use o tempo para olhar desempenho, fechamento e tendência do mês.",
+        "Não há operação ativa neste momento — use o tempo para explorar desempenho, fechamento e a estrutura do sistema.",
       href: "/desempenho",
       cta: "Abrir desempenho",
       icon: TrendingUp,

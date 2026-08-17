@@ -1,5 +1,3 @@
-import { BRIGADEIROS_BUSINESS_ID, SALGADOS_BUSINESS_ID } from "@/lib/business-units";
-
 /** Assets de marca (monograma / favicon). */
 export const HUB_BRAND_ASSETS = {
   favicon: "/icons/hub-favicon.svg",
@@ -34,18 +32,18 @@ export interface HubEnterprise {
 
 export const HUB_ENTERPRISES: HubEnterprise[] = [
   {
-    id: SALGADOS_BUSINESS_ID,
+    id: "op-exemplo-a",
     index: "01",
-    name: "Salty",
-    description: "Operação de salgados (demo)",
-    status: "active",
+    name: "Sua operação",
+    description: "No produto real, cada conta cria e nomeia as próprias operações.",
+    status: "coming_soon",
   },
   {
-    id: BRIGADEIROS_BUSINESS_ID,
+    id: "op-exemplo-b",
     index: "02",
-    name: "Candy",
-    description: "Doces e confeitaria (demo)",
-    status: "active",
+    name: "Outras unidades",
+    description: "Multi-operação por usuário — nada pré-carregado nesta demo pública.",
+    status: "coming_soon",
   },
 ];
 
@@ -74,10 +72,11 @@ export const HUB_COPY = {
   heroHighlight: "Controlar, escala.",
   heroTagline: "Ops Hub · NovaTech Solutions",
   heroDescription:
-    "Ops Hub é um centro de gestão multi-operação. Integramos dados, equipes e indicadores em um único painel — esta versão pública usa apenas dados fictícios.",
-  enterprisesHeading: "Operação ao vivo",
+    "Ops Hub é um centro de gestão multi-operação. Nesta demo a conta começa vazia — no produto real cada pessoa cria as próprias operações e dados.",
+  enterprisesHeading: "Operações sob medida",
   footerSlogan: "Demonstração de produto para portfólio.",
-  footerLegacy: "UI, analytics e operação em um só lugar — dados 100% fictícios.",
+  footerLegacy:
+    "Conta vazia de propósito: no sistema real, cada usuário monta a própria operação.",
   authWelcome: "Bem-vindo ao",
-  authSubtitle: "Explore a demonstração do centro operacional.",
+  authSubtitle: "Explore a UI com uma conta limpa — sem dados de operação pré-carregados.",
 } as const;

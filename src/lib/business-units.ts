@@ -14,10 +14,7 @@ export interface BusinessUnit {
   status: "active" | "inactive";
 }
 
-export const BUSINESS_UNITS: BusinessUnit[] = [
-  { id: SALGADOS_BUSINESS_ID, name: "Salty", slug: "salgados", status: "active" },
-  { id: BRIGADEIROS_BUSINESS_ID, name: "Candy", slug: "brigadeiros", status: "active" },
-];
+export const BUSINESS_UNITS: BusinessUnit[] = [];
 
 export function getBusinessUnitName(businessId: string): string {
   if (businessId === ALL_BUSINESSES_ID) return "Todos";

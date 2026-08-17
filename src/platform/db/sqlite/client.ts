@@ -543,6 +543,15 @@ function migrateStickyNotesNoteDate(sqlite: Database.Database) {
   }
 }
 
+function isPortfolioDemoRuntime() {
+  return (
+    process.env.NEXT_PUBLIC_DEMO_MODE === "true" ||
+    process.env.VERCEL === "1" ||
+    Boolean(process.env.VERCEL) ||
+    process.env.DEMO_SQLITE_TMP === "true"
+  );
+}
+
 function initTables(sqlite: Database.Database) {
   initLegacyTables(sqlite);
   initUsersTable(sqlite);
@@ -552,9 +561,12 @@ function initTables(sqlite: Database.Database) {
   migrateOperationalIntelligence(sqlite);
   migrateInvestmentSourceColumns(sqlite);
   migrateStickyNotesNoteDate(sqlite);
-  seedBusinessUnits(sqlite);
-  seedBrigadeirosGoalsIfMissing(sqlite);
-  seedSalgadosAdditionalInvestmentIfMissing(sqlite);
+  // Portfolio demo starts empty — no Salty/Candy personal ops.
+  if (!isPortfolioDemoRuntime()) {
+    seedBusinessUnits(sqlite);
+    seedBrigadeirosGoalsIfMissing(sqlite);
+    seedSalgadosAdditionalInvestmentIfMissing(sqlite);
+  }
   initOperationsTables(sqlite);
 }
 

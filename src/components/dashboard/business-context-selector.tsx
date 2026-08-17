@@ -102,7 +102,9 @@ export function BusinessContextSelector({ variant = "inline" }: BusinessContextS
           role="listbox"
         >
           {units.length === 0 ? (
-            <p className="px-3 py-2 text-sm text-text-muted">Crie sua primeira operação no painel.</p>
+            <p className="px-3 py-2 text-sm text-text-muted">
+              Nenhuma operação ainda. No produto real, cada conta cria as próprias aqui.
+            </p>
           ) : (
             options.map((option) => (
               <button
