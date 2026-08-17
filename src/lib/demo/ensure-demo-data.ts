@@ -9,16 +9,12 @@ export const DEMO_NAME = "Demo Portfolio";
 /** Same id on every Vercel instance so JWT + /tmp SQLite stay aligned. */
 export const DEMO_USER_ID = "demo-portfolio-user";
 
-/** Bump to force wipe of legacy Salty/Candy seeds on existing /tmp DBs. */
-const DEMO_EMPTY_SEED_VERSION = 2;
-
 let seedPromise: Promise<void> | null = null;
 
 function clearOperationalTables(sqlite: {
   exec: (sql: string) => unknown;
-  prepare: (sql: string) => { run: (...args: unknown[]) => unknown; get: (...args: unknown[]) => unknown };
 }) {
-  // Ordem segura: filhos antes de pais. DB da demo é descartável.
+  // Sempre zera a demo pública. DB em /tmp é descartável.
   const statements = [
     "DELETE FROM sale_items",
     "DELETE FROM sales",
@@ -56,8 +52,8 @@ function clearOperationalTables(sqlite: {
   }
 }
 
-/** Idempotente: garante login demo e conta operacional zerada. */
-export async function ensureDemoData(options?: { force?: boolean }): Promise<void> {
+/** Garante login demo e conta operacional sempre zerada (sem Salty/Candy). */
+export async function ensureDemoData(_options?: { force?: boolean }): Promise<void> {
   if (seedPromise) return seedPromise;
   seedPromise = (async () => {
     process.env.DB_PROVIDER = "sqlite";
@@ -70,56 +66,23 @@ export async function ensureDemoData(options?: { force?: boolean }): Promise<voi
     getSqliteDb();
     const sqlite = getSqlite();
 
-    sqlite.exec(`
-      CREATE TABLE IF NOT EXISTS demo_meta (
-        key TEXT PRIMARY KEY,
-        value TEXT NOT NULL
-      );
-    `);
-
-    const versionRow = sqlite
-      .prepare("SELECT value FROM demo_meta WHERE key = ?")
-      .get("empty_seed_version") as { value: string } | undefined;
-    const currentVersion = Number(versionRow?.value ?? 0);
-    const needsWipe = options?.force || currentVersion < DEMO_EMPTY_SEED_VERSION;
+    // Remove seeds automáticos (Salty/Candy) que o init legado possa ter inserido.
+    clearOperationalTables(sqlite);
 
     const { findUserByEmail, createUser } = await import(
       "@/platform/db/repositories/user-repository"
     );
     const { hashPassword } = await import("@/lib/auth/password");
 
-    let user = await findUserByEmail(DEMO_EMAIL);
-    if (!user) {
-      user = await createUser({
+    const existing = await findUserByEmail(DEMO_EMAIL);
+    if (!existing) {
+      await createUser({
         id: DEMO_USER_ID,
         email: DEMO_EMAIL,
         name: DEMO_NAME,
         passwordHash: await hashPassword(DEMO_PASSWORD),
       });
     }
-
-    if (needsWipe) {
-      clearOperationalTables(sqlite);
-      sqlite
-        .prepare(
-          `INSERT INTO demo_meta (key, value) VALUES (?, ?)
-           ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
-        )
-        .run("empty_seed_version", String(DEMO_EMPTY_SEED_VERSION));
-    }
-
-    // Remove legado Salty/Candy mesmo se a versão já estiver atual (defesa extra).
-    try {
-      sqlite
-        .prepare(
-          "DELETE FROM business_units WHERE id IN ('salgados', 'brigadeiros') OR slug IN ('salgados', 'brigadeiros')",
-        )
-        .run();
-    } catch {
-      /* ignore */
-    }
-
-    void user;
   })().catch((error) => {
     seedPromise = null;
     throw error;
