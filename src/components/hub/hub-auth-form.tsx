@@ -25,6 +25,11 @@ function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+/** Portfolio demo — always on in this repo (env is a fallback override only). */
+const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";
+const DEMO_EMAIL = "demo@portfolio.com";
+const DEMO_PASSWORD = "Demo123!";
+
 export function HubAuthForm({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -33,24 +38,18 @@ export function HubAuthForm({ compact = false }: { compact?: boolean }) {
   const [tab, setTab] = useState<AuthTab>("login");
   const [resetToken, setResetToken] = useState("");
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(IS_DEMO_MODE ? DEMO_EMAIL : "");
+  const [password, setPassword] = useState(IS_DEMO_MODE ? DEMO_PASSWORD : "");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [remember, setRemember] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(IS_DEMO_MODE);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [success, setSuccess] = useState(false);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [devResetUrl, setDevResetUrl] = useState<string | null>(null);
-  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
-
-  useEffect(() => {
-    if (!isDemoMode || tab !== "login") return;
-    setEmail((prev) => prev || "demo@portfolio.com");
-    setPassword((prev) => prev || "Demo123!");
-  }, [isDemoMode, tab]);
+  const isDemoMode = IS_DEMO_MODE;
 
   useEffect(() => {
     const token = searchParams.get("reset");
@@ -233,8 +232,13 @@ export function HubAuthForm({ compact = false }: { compact?: boolean }) {
     setDevResetUrl(null);
     if (next !== "reset") {
       setResetToken("");
-      setPassword("");
       setConfirmPassword("");
+    }
+    if (next === "login" && isDemoMode) {
+      setEmail(DEMO_EMAIL);
+      setPassword(DEMO_PASSWORD);
+    } else if (next !== "reset") {
+      setPassword("");
     }
   }
 
@@ -347,12 +351,15 @@ export function HubAuthForm({ compact = false }: { compact?: boolean }) {
             )}
 
             {isDemoMode && tab === "login" ? (
-              <div className="rounded-xl border border-[#00D4A8]/20 bg-[#00D4A8]/5 px-3 py-2.5 text-left text-[11px] leading-relaxed text-[#A3A3A3] sm:text-xs">
-                <p className="font-medium text-[#5EEAD4]">Conta de demonstração</p>
-                <p className="mt-0.5">
-                  demo@portfolio.com · Demo123!
+              <div className="rounded-xl border border-[#00D4A8]/25 bg-[#00D4A8]/8 px-3.5 py-3 text-left text-[11px] leading-relaxed sm:text-xs">
+                <p className="font-semibold text-[#5EEAD4]">Acesso rápido — demo pronta</p>
+                <p className="mt-1.5 text-[#E5E5E5]">
+                  E-mail: <span className="font-mono text-[#5EEAD4]">{DEMO_EMAIL}</span>
                 </p>
-                <p className="mt-1 text-[#737373]">Todos os dados são fictícios.</p>
+                <p className="mt-0.5 text-[#E5E5E5]">
+                  Senha: <span className="font-mono text-[#5EEAD4]">{DEMO_PASSWORD}</span>
+                </p>
+                <p className="mt-1.5 text-[#737373]">Campos já preenchidos. Basta clicar em Entrar.</p>
               </div>
             ) : null}
 
